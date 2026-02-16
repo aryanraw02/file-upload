@@ -69,15 +69,14 @@ export default function Avatar({ name, email, profilePic, setProfilePic }) {
 
         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-accent/80 shadow-xl transition-all duration-300 group-hover:scale-105 relative">
           {profilePic ? (
-            <div className="relative w-full h-full">
-              <Image
-                src={profilePic}
-                alt="Profile"
-                height={120}
-                width={120}
-                className={`object-cover ${uploading ? 'opacity-40' : 'opacity-100'}`}
-              />
-            </div>
+            <Image
+              src={profilePic}
+              alt="Profile"
+              fill
+              priority
+              sizes="128px"
+              className={`object-cover ${uploading ? "opacity-40" : "opacity-100"}`}
+            />
           ) : (
             <div className="w-full h-full bg-accent flex items-center justify-center text-5xl font-bold text-text/80">
               {uploading ? <Loader2 className="h-10 w-10 animate-spin text-text/80" /> : firstLetter}

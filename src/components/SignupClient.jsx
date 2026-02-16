@@ -34,12 +34,6 @@ export default function SignupClient() {
         const mobile = formData.mobile.trim();
         const password = formData.password;
 
-        const nameRegex = /^[a-zA-Z\s\-']{2,50}$/;
-        if (!nameRegex.test(fullname)) {
-            toast.error("Enter a valid full name");
-            return;
-        }
-
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
         if (!emailRegex.test(email)) {
             toast.error("Enter a valid email address");
@@ -58,7 +52,12 @@ export default function SignupClient() {
             const res = await fetch("https://file-system-xi.vercel.app/api/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ fullname, email, mobile, password }),
+                body: JSON.stringify({
+                    ...(fullname ? { fullname } : {}),
+                    email,
+                    mobile,
+                    password,
+                }),
             });
 
             const data = await res.json();
