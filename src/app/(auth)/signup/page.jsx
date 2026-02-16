@@ -1,0 +1,101 @@
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import AuthForm from '@/components/AuthForm';
+
+export default function SignupPage() {
+    const router = useRouter();
+
+    const [formData, setFormData] = useState({
+        fullname: "",
+        email: "",
+        mobile: "",
+        password: "",
+    });
+
+    const [loading, setLoading] = useState(false);
+
+    
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        if (value.startsWith(" ")) return;
+
+        if (name === "mobile" && !/^\d*$/.test(value)) return;
+
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const handleSignup = async (e) => {
+        e.preventDefault();
+
+        const fullname = formData.fullname.trim();
+        const email = formData.email.trim().toLowerCase();
+        const mobile = formData.mobile.trim();
+        const password = formData.password; 
+
+        
+        const nameRegex = /^[a-zA-Z\s\-']{2,50}$/;
+        if (!nameRegex.test(fullname)) {
+            toast.error("Enter a valid full name");
+            return;
+        }
+
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        if (!emailRegex.test(email)) {
+            toast.error("Enter a valid email address");
+            return;
+        }
+
+        
+        const mobileRegex = /^[6-9]\d{9}$/;
+        if (!mobileRegex.test(mobile)) {
+            toast.error("Enter a valid mobile number");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const res = await fetch("https://file-system-xi.vercel.app/api/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    fullname,
+                    email,
+                    mobile,
+                    password,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                toast.error(data.message || "Signup failed");
+                return;
+            }
+
+            toast.success("Signup successful! Please login.");
+            router.push("/login");
+        } catch {
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <AuthForm
+            type="signup"
+            formData={formData}
+            loading={loading}
+            onChange={handleChange}
+            onSubmit={handleSignup}
+        />
+    );
+}
