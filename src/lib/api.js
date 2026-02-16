@@ -10,6 +10,23 @@ async function getServerToken() {
 }
 
 export const apiService = {
+
+    verifyToken: async () => {
+        const token = await getServerToken();
+        if (!token) return null;
+
+        const res = await fetch(`${BASE_URL}/token/verify`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ token }),
+            cache: "no-store",
+        });
+
+        return res.ok ? res.json() : null;
+    },
     
     getDashboardStats: async () => {
         const token = await getServerToken();

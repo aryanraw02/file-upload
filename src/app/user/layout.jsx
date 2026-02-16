@@ -39,6 +39,11 @@ export default function UserLayout({ children }) {
       return;
     }
 
+    const clearTokenCookie = () => {
+      const secure = window.location.protocol === "https:" ? "; Secure" : "";
+      document.cookie = `token=; Path=/; Max-Age=0; SameSite=Lax${secure}`;
+    };
+
     const init = async () => {
       try {
         const authData = await clientApi.verifyToken(token);
@@ -57,6 +62,7 @@ export default function UserLayout({ children }) {
       } catch (err) {
         console.error("Auth initialization failed:", err);
         localStorage.removeItem("token");
+        clearTokenCookie();
         router.replace("/login");
       } finally {
         setLoading(false);
