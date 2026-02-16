@@ -5,6 +5,7 @@ export default function AuthForm({
     type,
     formData,
     loading,
+    submitEnabled = true,
     onChange,
     onSubmit,
 }) {
@@ -83,8 +84,14 @@ export default function AuthForm({
                     </div>
                     <button
                         type="submit"
-                        disabled={loading}
-                        className='w-full bg-accent text-background py-4 rounded-xl hover:bg-accent/80 active:scale-[0.98] transition-all font-bold text-lg cursor-pointer shadow-lg hover:shadow-xl flex items-center justify-center gap-3'
+                        disabled={loading || !submitEnabled}
+                        aria-disabled={loading || !submitEnabled}
+                        className={
+                            `w-full py-4 rounded-xl transition-all font-bold text-lg shadow-lg flex items-center justify-center gap-3 ` +
+                            (loading || !submitEnabled
+                                ? "bg-accent/40 text-background/70 cursor-not-allowed shadow-none"
+                                : "bg-accent text-background hover:bg-accent/80 active:scale-[0.98] cursor-pointer hover:shadow-xl")
+                        }
                     >
                         {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
                         {loading

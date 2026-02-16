@@ -20,6 +20,13 @@ export default function LoginClient() {
 
     const [loading, setLoading] = useState(false);
 
+    const email = formData.email.trim().toLowerCase();
+    const password = formData.password;
+    const isDirty = email.length > 0 || password.length > 0;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const isValid = emailRegex.test(email) && password.length > 0;
+    const submitEnabled = isDirty && isValid;
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (value.startsWith(" ")) return;
@@ -29,10 +36,6 @@ export default function LoginClient() {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const email = formData.email.trim().toLowerCase();
-        const password = formData.password;
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
         if (!emailRegex.test(email)) {
             toast.error("Enter a valid email address");
             return;
@@ -69,6 +72,7 @@ export default function LoginClient() {
             type="login"
             formData={formData}
             loading={loading}
+            submitEnabled={submitEnabled}
             onChange={handleChange}
             onSubmit={handleLogin}
         />

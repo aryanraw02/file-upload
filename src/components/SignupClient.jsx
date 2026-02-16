@@ -17,6 +17,20 @@ export default function SignupClient() {
 
     const [loading, setLoading] = useState(false);
 
+    const fullname = formData.fullname.trim();
+    const email = formData.email.trim().toLowerCase();
+    const mobile = formData.mobile.trim();
+    const password = formData.password;
+    const isDirty =
+        fullname.length > 0 ||
+        email.length > 0 ||
+        mobile.length > 0 ||
+        password.length > 0;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const mobileRegex = /^[6-9]\d{9}$/;
+    const isValid = emailRegex.test(email) && mobileRegex.test(mobile) && password.length > 0;
+    const submitEnabled = isDirty && isValid;
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -29,18 +43,10 @@ export default function SignupClient() {
     const handleSignup = async (e) => {
         e.preventDefault();
 
-        const fullname = formData.fullname.trim();
-        const email = formData.email.trim().toLowerCase();
-        const mobile = formData.mobile.trim();
-        const password = formData.password;
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
         if (!emailRegex.test(email)) {
             toast.error("Enter a valid email address");
             return;
         }
-
-        const mobileRegex = /^[6-9]\d{9}$/;
         if (!mobileRegex.test(mobile)) {
             toast.error("Enter a valid mobile number");
             return;
@@ -81,6 +87,7 @@ export default function SignupClient() {
             type="signup"
             formData={formData}
             loading={loading}
+            submitEnabled={submitEnabled}
             onChange={handleChange}
             onSubmit={handleSignup}
         />
